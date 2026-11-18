@@ -15,7 +15,7 @@ function Login() {
     toast(data.msg);
     console.log(data);
     if(data.success){
-      navigate('/Dashboard')
+      navigate('/Product')
     }
   }
 

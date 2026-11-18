@@ -10,8 +10,8 @@ function Signup() {
 
 
   const setBackendData = async () => {
-    axios.post('http://localhost:5000/Signup', { fName, email, password })
-    toast.success('Account Successful !')
+    await axios.post('http://localhost:5000/Signup', { fName, email, password })
+     toast.success('Account Successful !')
     setFname('')
     setEmail('')
     setPassword('')

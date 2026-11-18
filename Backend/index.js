@@ -1,7 +1,7 @@
 import express, { request, response } from 'express'
 import cors from 'cors'
-import connectDb from './connectDb.js'
-import user from './userModel.js'
+import connectDb from './Confige/connectDb.js'
+import user from './model/userModel.js'
 import axios from 'axios'
 
 
@@ -17,7 +17,7 @@ app.post('/Signup', async(request,response) =>{
     if (findUser){
         return response.send('Email is already taken')   
     }
-    user.create({fName,email,password})
+     await user.create({fName,email,password})
     response.send('Account Successful')
 })
 
