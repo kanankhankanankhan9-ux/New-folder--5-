@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
+import axios from 'axios'
 
 const Product = () => {
   const [showForm, setShowForm] = useState(false)
   const [price, setPrice] = useState("")
   const [name, setName] = useState("")
+  const [user, setUser] = useState([])
+  const [update, setUpdate] = useState(null)
   const [products, setProducts] = useState([
     { id: 1, name: "Product 1", price: "10" },
     { id: 2, name: "Product 2", price: "15" },
@@ -12,12 +15,54 @@ const Product = () => {
     { id: 5, name: "Product 5", price: "30" },
   ])
 
- const handleSubmit = () => {
-  setProducts([...products, { id: Date.now(), name: name, price: price }])
-  setName("")
-  setPrice("")
-  setShowForm(false)
+
+
+  const setBackendData = async () => {
+    if (update) {
+
+      await axios.put(`http://localhost:5000/products/${update._id}`, {
+        name,
+        price,
+      })
+    } else {
+
+      await axios.post('http://localhost:5000/products', {
+        name,
+        price,
+      })
+    }
+  }
+const handleEdit = (data) => {
+  setName(data.name)
+  setPrice(data.price)
+  setUpdate(data)
+  setShowForm(true)  
 }
+const handleDelete = async (id) =>{
+  
+    await axios.post('http://localhost:5000/delete', { _id: id })
+    getProducts()
+
+
+  
+
+}
+
+  const handleSubmit = () => {
+    setProducts([...products, { id: Date.now(), name: name, price: price }])
+    setName("")
+    setPrice("")
+    setShowForm(false)
+  }
+  const getProducts = async () =>{
+    const res = await axios.get('http://localhost:5000/Product')
+    setProducts(res.data)
+  }
+  useEffect(() =>{
+    getProducts()
+  },[])
+
+
 
   return (
     <div className="p-6">
@@ -66,7 +111,7 @@ const Product = () => {
             <th className="p-3">#</th>
             <th className="p-3">Name</th>
             <th className="p-3">Price</th>
-            <th className="p-3">Category</th>
+            <th className="p-3">Edit/Update/Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +120,19 @@ const Product = () => {
               <td className="p-3">{index + 1}</td>
               <td className="p-3">{product.name}</td>
               <td className="p-3">{product.price}</td>
+              <td className="p-3">
+                <div>
+                  <button onClick={() => handleEdit(product)} >
+                    Edit
+                  </button>
+                  <button onClick={() =>handleDelete()}>
+                    Delete
+                  </button>
+
+
+                </div>
+
+              </td>
             </tr>
           ))}
         </tbody>

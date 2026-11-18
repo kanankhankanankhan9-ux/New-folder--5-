@@ -1,8 +1,9 @@
-import express, { request, response } from 'express'
+import express from 'express'
 import cors from 'cors'
 import connectDb from './Confige/connectDb.js'
 import user from './model/userModel.js'
-import axios from 'axios'
+import Product from './model/Product.js'
+
 
 
 connectDb()
@@ -41,6 +42,22 @@ app.post('/Login', async (request,response) =>{
         msg:'Login Successful',
         success:true
     })
+})
+app.post('/Product', async (request, response) => {
+    const { name, price } = request.body
+    const newProduct = await Product.create({ name, price })
+    response.json(newProduct)
+})
+
+app.get('/Product', async (request, response) => {
+    const allProducts = await Product.find()
+    response.json(allProducts)
+})
+
+app.post('/delete', async (request, response) => {
+    const { _id } = request.body
+    await Product.findByIdAndDelete(_id)
+    response.json({ message: 'Deleted' })
 })
 
 
